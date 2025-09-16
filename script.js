@@ -49,13 +49,45 @@ function drawGround() {
 	ctx.fillRect(0, GROUND_Y, canvas.width, 4);
 }
 
+
+function checkCollision() {
+	for (let obs of obstacles) {
+		if (
+			PLAYER_X < obs.x + OBSTACLE_WIDTH &&
+			PLAYER_X + PLAYER_WIDTH > obs.x &&
+			playerY < obs.y + OBSTACLE_HEIGHT &&
+			playerY + PLAYER_HEIGHT > obs.y
+		) {
+			return true;
+		}
+	}
+	return false;
+}
+
 function gameLoop() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	drawGround();
 	drawPlayer();
 	drawObstacles();
 	updateObstacles();
+
+	if (checkCollision()) {
+		ctx.font = '48px sans-serif';
+		ctx.fillStyle = 'red';
+		ctx.fillText('Game Over!', canvas.width / 2 - 120, canvas.height / 2);
+		return; // Stop the game
+	}
+
 	requestAnimationFrame(gameLoop);
 }
+
+// Add more obstacles for variety
+obstacles = [
+	{ x: canvas.width, y: GROUND_Y - OBSTACLE_HEIGHT },
+	{ x: canvas.width + 400, y: GROUND_Y - OBSTACLE_HEIGHT },
+	{ x: canvas.width + 800, y: GROUND_Y - OBSTACLE_HEIGHT }
+];
+
+gameLoop();
 
 gameLoop();
